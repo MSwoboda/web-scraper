@@ -12,7 +12,7 @@
               <a href="{{link}}">{{title}}</a>
             </div>
 
-            <div class="col-3">
+            {{!-- <div class="col-1">
               <div class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-success active">
                   <input type="radio" name="options" id="{{_id}}"> Note
@@ -23,6 +23,15 @@
                 </label>
 
               </div>
+            </div> --}}
+            <div class="col-1">
+              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#noteModal"
+                data-whatever="{{_id}}">Edit</button>
+
+            </div>
+            <div class="col-1">
+              <button class="btn btn-danger" onclick="window.location.href = '/delete/{{_id}}';" id="{{_id}}"> Delete</button>
+
             </div>
           </div>
       </li>
@@ -33,11 +42,7 @@
 </ul>
 
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Open modal for @fat</button>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">Open modal for @getbootstrap</button>
-
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -68,12 +73,6 @@
 
 <script>
 
-$('#exampleModal').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  var recipient = button.data('whatever') 
-  var modal = $(this)
-  modal.find('.modal-title').text('New message to ' + recipient)
-  modal.find('.modal-body input').val(recipient)
-})
+
 
 </script>
