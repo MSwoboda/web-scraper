@@ -80,7 +80,7 @@ $('#noteModal').on('show.bs.modal', function (event) {
 })
 
 $("#noteAdd").on("click", function (event) {
-  console.log($("#noteAdd").attr("data-reciptent"));
+  console.log($("#message-text").val());
   
   $.ajax({
     type: "POST",

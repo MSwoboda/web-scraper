@@ -31,11 +31,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/notes", (req, res) => {
-  res.render("index");
-
-  // db.Article.find({notes: {$exists:true}})
-  //   .then((dbArticle) => {res.render("notes")})
-  //   .catch((err) => { console.log(err) })
+  db.Article.find({notes: {$exists:true}})
+    .then((dbArticle) => {
+      console.log(dbArticle);
+      res.render("notes",{notes:dbArticle})})
+    .catch((err) => { console.log(err) })
 });
 
 app.get("/remove", (req, res) => {
@@ -49,7 +49,6 @@ app.get("/scrape", function (req, res) {
     var $ = cheerio.load(response.data);
 
     $("td.title").each(function (i, element) {
-      // Save an empty result object
       var result = {};
 
       result.title = $(this)
@@ -59,13 +58,10 @@ app.get("/scrape", function (req, res) {
         .children("a")
         .attr("href");
 
-      // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then((dbArticle) => { console.log(dbArticle) })
         .catch((err) => { console.log(err) })
     });
-
-    // Send a message to the client
     res.redirect("/");
   });
 });
@@ -83,7 +79,6 @@ app.get("/articles/:id", (req, res) => {
     .catch(err => res.json(err))
 });
 
-
 app.get("/delete/:id", (req, res) => {
   db.Article.deleteOne({ _id: req.params.id })
     .then(dbArticle => res.redirect("/"))
@@ -91,7 +86,7 @@ app.get("/delete/:id", (req, res) => {
 });
 
 app.post("/articles/:id", (req, res) => { 
-  db.Article.findOneAndUpdate({ _id: req.params.id }, { note: req.note }, { new: true });
+  db.Article.findOneAndUpdate({ _id: req.params.id }, { note: req.data }, { new: true });
 });
 
 app.listen(PORT, () => { console.log("App running on port " + PORT + "!") });
