@@ -25,19 +25,17 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/articleDB";
 mongoose.connect(MONGODB_URI);
 
 app.get("/", (req, res) => {
-
   db.Article.find({})
-    .then((dbArticle) => {
-      // console.log(dbArticle);
-      //       article = { title: "Hello", link: "doggo" };
-      // console.log(article);
-
-      res.render("index", {
-        article: dbArticle
-      });
-    })
+    .then((dbArticle) => {res.render("index", {article: dbArticle})})
     .catch((err) => { console.log(err) })
+});
 
+app.get("/notes", (req, res) => {
+  res.render("index");
+
+  // db.Article.find({notes: {$exists:true}})
+  //   .then((dbArticle) => {res.render("notes")})
+  //   .catch((err) => { console.log(err) })
 });
 
 app.get("/remove", (req, res) => {
@@ -48,10 +46,8 @@ app.get("/remove", (req, res) => {
 
 app.get("/scrape", function (req, res) {
   axios.get("https://news.ycombinator.com/").then(function (response) {
-    // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
-    // Now, we grab every h2 within an article tag, and do the following:
     $("td.title").each(function (i, element) {
       // Save an empty result object
       var result = {};
@@ -80,7 +76,7 @@ app.get("/articles", (req, res) => {
     .catch(err => { res.json(err) })
 });
 
-app.get("/articles/:id", function (req, res) {
+app.get("/articles/:id", (req, res) => {
   db.Article.findOne({ _id: req.params.id })
     .populate("note")
     .then(dbArticle => res.json(dbArticle))
@@ -88,17 +84,14 @@ app.get("/articles/:id", function (req, res) {
 });
 
 
-app.get("/delete/:id", function (req, res) {
+app.get("/delete/:id", (req, res) => {
   db.Article.deleteOne({ _id: req.params.id })
     .then(dbArticle => res.redirect("/"))
     .catch(err => res.redirect("/"))
 });
 
-app.post("/articles/:id", (req, res) => {
-  db.Note.create(req.body)
-    .then(dbNote => { return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true }); })
-    .then(dbArticle => { res.json(dbArticle) })
-    .catch(err => res.json(err))
+app.post("/articles/:id", (req, res) => { 
+  db.Article.findOneAndUpdate({ _id: req.params.id }, { note: req.note }, { new: true });
 });
 
 app.listen(PORT, () => { console.log("App running on port " + PORT + "!") });

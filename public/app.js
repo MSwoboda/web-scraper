@@ -66,15 +66,29 @@ $(document).on("click", "#savenote", function() {
       $("#notes").empty();
     });
 
-  // Also, remove the values entered in the input and textarea for note entry
   $("#titleinput").val("");
   $("#bodyinput").val("");
 });
 
 $('#noteModal').on('show.bs.modal', function (event) {
-  var button = $(event.relatedTarget) // Button that triggered the modal
+  var button = $(event.relatedTarget) 
   var recipient = button.data('whatever') 
   var modal = $(this)
+  $("#noteAdd").attr("data-reciptent",recipient);
   modal.find('.modal-title').text('New message to ' + recipient)
   modal.find('.modal-body input').val(recipient)
 })
+
+$("#noteAdd").on("click", function (event) {
+  console.log($("#noteAdd").attr("data-reciptent"));
+  
+  $.ajax({
+    type: "POST",
+    url: '/articles/' + $("#noteAdd").attr("data-reciptent"),
+    data:  $("#message-text").val(),
+    success: window.location.replace("/")
+});
+
+});
+
+
